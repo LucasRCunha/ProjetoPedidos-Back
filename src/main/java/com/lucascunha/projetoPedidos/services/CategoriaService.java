@@ -3,10 +3,12 @@ package com.lucascunha.projetoPedidos.services;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.lucascunha.projetoPedidos.domain.Categoria;
 import com.lucascunha.projetoPedidos.repositories.CategoriaRepository;
+import com.lucascunha.projetoPedidos.services.exceptions.DataIntegrityException;
 import com.lucascunha.projetoPedidos.services.exceptions.ObjectNotFoundException;
 
 @Service
@@ -30,6 +32,15 @@ public class CategoriaService {
 	public Categoria update(Categoria obj) {
 		find(obj.getId());
 		return repo.save(obj);
+	}
+
+	public void delete(Integer id) {
+		find(id);
+		try {
+			repo.deleteById(id);
+		} catch (DataIntegrityViolationException e) {
+			throw new DataIntegrityException("Não é possível excluir uma categoria que possui produtos");
+		}
 	}
 
 }
