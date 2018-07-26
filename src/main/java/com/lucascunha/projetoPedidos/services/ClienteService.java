@@ -1,5 +1,6 @@
 package com.lucascunha.projetoPedidos.services;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.lucascunha.projetoPedidos.domain.Cidade;
 import com.lucascunha.projetoPedidos.domain.Cliente;
@@ -35,6 +37,8 @@ public class ClienteService {
 	private EnderecoRepository enderecoRepository;
 	@Autowired
 	private BCryptPasswordEncoder pe;
+	@Autowired
+	private S3Service s3Service;
 
 	public Cliente find(Integer id) {
 		UserSS user = UserService.authenticated();
@@ -105,4 +109,8 @@ public class ClienteService {
 		}
 		return cli;
 	}
+	
+	public URI uploadProfilePicture(MultipartFile multipartFile) {
+				return s3Service.uploadFile(multipartFile);
+			}
 }
